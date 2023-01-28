@@ -6,7 +6,6 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import moment from 'moment';
-import InputGroup from 'react-bootstrap/InputGroup';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -33,8 +32,6 @@ const FormCalc = () =>{
 
   const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault()
-    const form = event.currentTarget as HTMLInputElement;
-
     setValidated(true);
 
     if (deliveryInfo.value > 0.0 && deliveryInfo.dist > 0 && deliveryInfo.itemnsNo > 0){
@@ -103,19 +100,19 @@ const FormCalc = () =>{
 
 
   return (
-    <Container fluid className='h-100'>
-    <Form noValidate validated={validated} onSubmit={handleSubmit} className='mb-3 border border-primary rounded p-3 m-0'>
-      <Row className="mb-3 d-flex justify-content-center">
-        <Form.Group as={Col} md="4" controlId="value">
+    <Container className='min-vh-100 d-flex flex-column justify-content-center align-items-center'>
+    <Form noValidate validated={validated} onSubmit={handleSubmit} className=' mb-3 border border-primary rounded p-3 w-50'>
+      <Row className="b-3 d-flex justify-content-center">
+        <Form.Group as={Col} md="max-auto" controlId="value">
           <Form.Label>Cart value</Form.Label>
           <Form.Control required type="number" min={0} placeholder="€" onChange={(event) =>  setDeliveryInfo({ ...deliveryInfo, value: Number(event.target.value) })}
           />
-        <Form.Control.Feedback type="invalid" ><Collapse in={true}><div>Please provide a valid value.</div></Collapse></Form.Control.Feedback>
-        <Form.Control.Feedback >Cart value saved!</Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid" >Please provide a valid value.</Form.Control.Feedback>
+        <Form.Control.Feedback>Cart value saved!</Form.Control.Feedback>
         </Form.Group>
       </Row>
       <Row className="mb-3 d-flex justify-content-center">
-        <Form.Group as={Col} md="4" controlId="dist">
+        <Form.Group as={Col} md="max-auto" controlId="dist">
           <Form.Label>Delivery distance</Form.Label>
           <Form.Control required type="number" step={1} min = {0} placeholder="m" onChange={(event) => setDeliveryInfo({ ...deliveryInfo, dist: Number(event.target.value) })} />
           <Form.Control.Feedback type="invalid">Please rovide a valid distance.</Form.Control.Feedback>
@@ -123,7 +120,7 @@ const FormCalc = () =>{
         </Form.Group>
       </Row>
       <Row className="mb-3 d-flex justify-content-center">
-        <Form.Group as={Col} md="4" controlId="itemsNo">
+        <Form.Group as={Col} md="max-auto" controlId="itemsNo">
           <Form.Label>Number of items</Form.Label>
           <Form.Control required type="number" step={1} min = {0} placeholder="0" onChange={(event) => setDeliveryInfo({ ...deliveryInfo, itemnsNo: Number(event.target.value) })} />
           <Form.Control.Feedback type="invalid">Please provide a valid number of items.</Form.Control.Feedback>
@@ -131,18 +128,18 @@ const FormCalc = () =>{
         </Form.Group>
       </Row>
       <Row className='mb-3 d-flex justify-content-center'>
-        <Form.Group as = {Col} md="4" controlId="dateTime">
+        <Form.Group as = {Col} md="max-auto" controlId="dateTime">
         <Form.Label>Date of the order</Form.Label>
         <Form.Control required type="datetime-local" placeholder={moment().format().slice(0,16)} defaultValue={moment().format().slice(0,16)} onChange={(event) => setDeliveryInfo({ ...deliveryInfo, dataTime: event.target.value })} />
         </Form.Group>
       </Row>
-      <div className='d-flex justify-content-center'>
-      <Button type="submit">Calculate</Button>
+      <div  className='mb-3 d-flex justify-content-center'>
+      <Button size='lg' type="submit">Calculate</Button>
       </div>
     </Form>
-    <div className='d-flex justify-content-center p-3'>
+    <Row className='p-3'>
     <CalcFee {...deliveryInfo}/>
-    </div>
+    </Row>
     </Container>
   );
 }
