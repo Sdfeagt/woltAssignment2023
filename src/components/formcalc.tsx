@@ -180,7 +180,7 @@ const FormCalc = () => {
             />
             {deliveryInfo.itemnsNo <= 0 ? (
               <Form.Control.Feedback type="invalid">
-                Please provide the amount of items larger than 0!
+                Please provide an amount of items larger than 0!
               </Form.Control.Feedback>
             ) : (
               <Form.Control.Feedback type="invalid">
