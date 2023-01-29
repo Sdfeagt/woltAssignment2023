@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Collapse, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import moment from 'moment';
+import Badge from 'react-bootstrap/Badge';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -21,7 +22,6 @@ const FormCalc = () =>{
   useEffect(()=>{
   })
   const [validated, setValidated] = useState(false);
-  const [showResult, setshowResult] = useState(false);
   const [detectChange, setDetectChange] = useState<FeeInformation>()
   const [deliveryInfo, setDeliveryInfo] = useState<FeeInformation>({
     value: 0.0,
@@ -34,18 +34,14 @@ const FormCalc = () =>{
     event.preventDefault()
     setValidated(true);
 
-    if (deliveryInfo.value > 0.0 && deliveryInfo.dist > 0 && deliveryInfo.itemnsNo > 0){
-      setDetectChange(deliveryInfo)
-      setshowResult(true)
-    }
-    else{
-      setshowResult(false)
-    }
+    if (deliveryInfo.value > 0.0 && deliveryInfo.dist > 0 && deliveryInfo.itemnsNo > 0 && deliveryInfo.value.toString().length <= 4 && Number.isInteger(deliveryInfo.dist) && Number.isInteger(deliveryInfo.itemnsNo)){
+        setDetectChange(deliveryInfo)
+      }
   }
 
 
   const CalcFee = (feeinfo: FeeInformation) =>{
-    if (showResult && detectChange === deliveryInfo){
+    if (detectChange === deliveryInfo){
     let deliveryFee: number = 0
     if (feeinfo.value < 10){
       deliveryFee += 10-feeinfo.value
@@ -71,10 +67,10 @@ const FormCalc = () =>{
     if(feeinfo.value >= 100){
       deliveryFee = 0
     }
-    return(<div className='response'>Delivery fee: {Math.round(deliveryFee * 100) / 100}</div>)
+    return(<h2><Badge bg="primary">Delivery fee: {Math.round(deliveryFee * 100) / 100}</Badge></h2>)
   }
   else{
-    return(<div className='response'>Input the variables and press `Calculate`</div>)
+    return(<h2><Badge bg="secondary">Input the variables and press `Calculate`</Badge></h2>)
   }
   }
 
@@ -100,14 +96,17 @@ const FormCalc = () =>{
 
 
   return (
-    <Container className='min-vh-100 d-flex flex-column justify-content-center align-items-center'>
+    <Container className='min-vh-100 d-flex flex-column justify-content-center align-items-center '>
     <Form noValidate validated={validated} onSubmit={handleSubmit} className=' mb-3 border border-primary rounded p-3 w-50'>
-      <Row className="b-3 d-flex justify-content-center">
+      <Row className="mb-3 d-flex justify-content-center">
         <Form.Group as={Col} md="max-auto" controlId="value">
           <Form.Label>Cart value</Form.Label>
-          <Form.Control required type="number" min={0} placeholder="€" onChange={(event) =>  setDeliveryInfo({ ...deliveryInfo, value: Number(event.target.value) })}
+          <Form.Control required type="number" step={0.01} min={0.01} placeholder="€" onChange={(event) =>  setDeliveryInfo({ ...deliveryInfo, value: Number(event.target.value) })}
           />
-        <Form.Control.Feedback type="invalid" >Please provide a valid value.</Form.Control.Feedback>
+          {deliveryInfo.value <= 0.0 ?
+           <Form.Control.Feedback type="invalid" >Please provide a value larger than 0!</Form.Control.Feedback>
+            : 
+            <Form.Control.Feedback type="invalid" >Please provide the value in proper format (up to two decimals)!</Form.Control.Feedback>}
         <Form.Control.Feedback>Cart value saved!</Form.Control.Feedback>
         </Form.Group>
       </Row>
@@ -115,7 +114,10 @@ const FormCalc = () =>{
         <Form.Group as={Col} md="max-auto" controlId="dist">
           <Form.Label>Delivery distance</Form.Label>
           <Form.Control required type="number" step={1} min = {0} placeholder="m" onChange={(event) => setDeliveryInfo({ ...deliveryInfo, dist: Number(event.target.value) })} />
-          <Form.Control.Feedback type="invalid">Please rovide a valid distance.</Form.Control.Feedback>
+          {deliveryInfo.dist <= 0 ?
+           <Form.Control.Feedback type="invalid" >Please provide a distance larger than 0!</Form.Control.Feedback>
+            : 
+            <Form.Control.Feedback type="invalid" >Please provide the distance in proper format (integers)!</Form.Control.Feedback>}
           <Form.Control.Feedback>Distance saved!</Form.Control.Feedback>
         </Form.Group>
       </Row>
@@ -123,7 +125,10 @@ const FormCalc = () =>{
         <Form.Group as={Col} md="max-auto" controlId="itemsNo">
           <Form.Label>Number of items</Form.Label>
           <Form.Control required type="number" step={1} min = {0} placeholder="0" onChange={(event) => setDeliveryInfo({ ...deliveryInfo, itemnsNo: Number(event.target.value) })} />
-          <Form.Control.Feedback type="invalid">Please provide a valid number of items.</Form.Control.Feedback>
+          {deliveryInfo.itemnsNo <= 0 ?
+           <Form.Control.Feedback type="invalid" >Please provide the amount of items larger than 0!</Form.Control.Feedback>
+            : 
+            <Form.Control.Feedback type="invalid" >Please provide the amount of items in proper format(integers)!</Form.Control.Feedback>}
           <Form.Control.Feedback>Number of items saved!</Form.Control.Feedback>
         </Form.Group>
       </Row>
