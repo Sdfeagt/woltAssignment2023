@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Container } from "react-bootstrap"
-
-import Button from "react-bootstrap/Button"
-import Col from "react-bootstrap/Col"
-import Form from "react-bootstrap/Form"
-import Row from "react-bootstrap/Row"
+import { Container, Button, Col, Form, Row, Badge } from "react-bootstrap"
 import moment from "moment"
-import Badge from "react-bootstrap/Badge"
-
 import "bootstrap/dist/css/bootstrap.min.css"
 
 interface FeeInformation {
@@ -20,7 +13,7 @@ interface FeeInformation {
 const FormCalc = () => {
   useEffect(() => {})
   const [validated, setValidated] = useState(false)
-  const [detectChange, setDetectChange] = useState<FeeInformation>()
+  const [deliveryfee, setDeliveryfee] = useState(0)
   const [deliveryInfo, setDeliveryInfo] = useState<FeeInformation>({
     value: 0.0,
     dist: 0,
@@ -36,61 +29,48 @@ const FormCalc = () => {
       deliveryInfo.value > 0.0 &&
       deliveryInfo.dist > 0 &&
       deliveryInfo.itemnsNo > 0 &&
-      deliveryInfo.value.toString().length <= 4 &&
+      deliveryInfo.value.toString().length <= 5 &&
       Number.isInteger(deliveryInfo.dist) &&
       Number.isInteger(deliveryInfo.itemnsNo)
     ) {
-      setDetectChange(deliveryInfo)
-    }
-  }
-
-  const CalcFee = (feeinfo: FeeInformation) => {
-    if (detectChange === deliveryInfo) {
-      let deliveryFee: number = 0
-      if (feeinfo.value < 10) {
-        deliveryFee += 10 - feeinfo.value
-      }
-      if (feeinfo.dist <= 1000) {
-        deliveryFee += 2
-      } else {
-        deliveryFee += Math.ceil((feeinfo.dist - 1000) / 500)
-      }
-      if (feeinfo.itemnsNo >= 13) {
-        deliveryFee += (feeinfo.itemnsNo - 4) * 0.5 + 1.2
-      } else if (feeinfo.itemnsNo >= 5) {
-        deliveryFee += (feeinfo.itemnsNo - 4) * 0.5
-      }
-      if (
-        new Date(feeinfo.dataTime).getDay() === 5 &&
-        getHour(feeinfo.dataTime)
-      ) {
-        deliveryFee *= 1.2
-      }
-      if (deliveryFee > 15) {
-        deliveryFee = 15
-      }
-      if (feeinfo.value >= 100) {
-        deliveryFee = 0
-      }
-      return (
-        <h2>
-          <Badge bg="primary">
-            Delivery fee: {Math.round(deliveryFee * 100) / 100}
-          </Badge>
-        </h2>
-      )
+      calcFee(deliveryInfo)
     } else {
-      return (
-        <h2>
-          <Badge bg="secondary">
-            Input the variables and press `Calculate`
-          </Badge>
-        </h2>
-      )
+      setDeliveryfee(0)
     }
   }
 
-  const getHour = (dateString: string) => {
+  const calcFee = (delInfo: FeeInformation) => {
+    let fee: number = 0
+    if (delInfo.value < 10) {
+      fee += 10 - delInfo.value
+    }
+    if (delInfo.dist <= 1000) {
+      fee += 2
+    } else {
+      fee += Math.ceil((delInfo.dist - 1000) / 500)
+    }
+    if (delInfo.itemnsNo >= 13) {
+      fee += (delInfo.itemnsNo - 4) * 0.5 + 1.2
+    } else if (delInfo.itemnsNo >= 5) {
+      fee += (delInfo.itemnsNo - 4) * 0.5
+    }
+    if (
+      new Date(delInfo.dataTime).getDay() === 5 &&
+      isPeakHour(delInfo.dataTime)
+    ) {
+      fee *= 1.2
+    }
+    if (fee > 15) {
+      fee = 15
+    }
+    if (delInfo.value >= 100) {
+      fee = 0
+    }
+    console.log(fee)
+    setDeliveryfee(fee)
+  }
+
+  const isPeakHour = (dateString: string) => {
     let hour: number = Number(dateString.slice(11, 13))
     if (hour >= 15 && hour <= 19) {
       return true
@@ -216,7 +196,17 @@ const FormCalc = () => {
         </div>
       </Form>
       <Row className="p-3">
-        <CalcFee {...deliveryInfo} />
+        {deliveryfee !== 0 ? (
+          <h2>
+            <Badge bg="primary">Delivery fee: {deliveryfee}</Badge>
+          </h2>
+        ) : (
+          <h2>
+            <Badge bg="secondary">
+              Input the variables and press `Calculate`
+            </Badge>
+          </h2>
+        )}
       </Row>
     </Container>
   )
