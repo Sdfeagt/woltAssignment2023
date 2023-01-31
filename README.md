@@ -9,14 +9,13 @@ and [React bootstrap](https://react-bootstrap.github.io/) were also used.
 
 In the project directory, you can run:
 
-``` npm install ```
+### `npm install`
 
 This will install all neccessary dependencies.
 
-``` npm start ```
+### `npm start`
 
-This runs the app
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This runs the app. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 
 # Learn More
