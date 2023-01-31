@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Container, Button, Col, Form, Row, Badge } from "react-bootstrap"
 import moment from "moment"
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -11,7 +11,6 @@ interface FeeInformation {
 }
 
 const FormCalc = () => {
-  useEffect(() => {})
   const [validated, setValidated] = useState(false)
   const [deliveryfee, setDeliveryfee] = useState(0)
   const [deliveryInfo, setDeliveryInfo] = useState<FeeInformation>({
@@ -66,7 +65,6 @@ const FormCalc = () => {
     if (delInfo.value >= 100) {
       fee = 0
     }
-    console.log(fee)
     setDeliveryfee(fee)
   }
 
